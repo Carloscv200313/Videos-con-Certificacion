@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useRef, useEffect } from 'react'
 import { Progress } from "@/components/ui/progress"
 
@@ -7,22 +6,28 @@ interface Props {
   video: string
 }
 
+interface Video {
+  url: string
+}
+
 export default function DefaultVideoProgressPlayer({ video }: Props) {
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [videos, setVideo] = useState<Video[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.src = `/${video}.mp4`
-
-      // Establecer el tiempo inicial en el segundo 10 cuando se carguen los metadatos
-      videoRef.current.addEventListener('loadedmetadata', () => {
-        if (videoRef.current) {
-          videoRef.current.currentTime = 0
-        }
-      })
+    const obtenerVideo = async () => {
+      try {
+        const datos = await fetch(`/api/videos/${video}`)
+        const dato = await datos.json()
+        setVideo(dato)
+        console.log(dato)
+      } catch (error) {
+        console.error("Error al obtener el video:", error)
+      }
     }
+    obtenerVideo()
   }, [video])
 
   const handleTimeUpdate = () => {
@@ -46,15 +51,20 @@ export default function DefaultVideoProgressPlayer({ video }: Props) {
   return (
     <div className="max-w-md mx-auto mt-0 p-6 bg-white rounded-lg shadow-md">
       <Progress value={progress} className="w-full mb-2" aria-label="Progreso del video" />
-      <video
-        ref={videoRef}
-        className="w-full mb-4 rounded"
-        onTimeUpdate={handleTimeUpdate}
-        controls
-        aria-label="Video predeterminado"
-      >
-        Tu navegador no soporta el elemento de video.
-      </video>
+      {videos.length > 0 ? (
+        <video
+          ref={videoRef}
+          className="w-full mb-4 rounded"
+          onTimeUpdate={handleTimeUpdate}
+          controls
+          aria-label="Video predeterminado"
+          src={videos[0].url}
+        >
+          Tu navegador no soporta el elemento de video.
+        </video>
+      ) : (
+        <p className="text-gray-600">Cargando video...</p>
+      )}
       <div className="flex justify-between text-sm text-gray-600">
         <span>Progreso: {progress.toFixed(1)}%</span>
         <span>Tiempo restante: {formatTime(remainingTime)}</span>

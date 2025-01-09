@@ -1,16 +1,36 @@
 "use client"
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { BarChart3, Home, ShoppingBag, ShoppingCart, Users, AlignJustify,CircleX } from 'lucide-react'
-export const Sidebar = () => {
-    const Vistas = [
-        { nombre: "Home", src: "/Empleado", icon: Home },
-        { nombre: "Video 1", src: "/Empleado/video_01", icon: Users },
-        { nombre: "Video 2", src: "/Empleado/video_02", icon: BarChart3 },
-        { nombre: "Video 3", src: "/Empleado/video_03", icon: ShoppingCart },
-        { nombre: "Video 4", src: "/Empleado/video_04", icon: ShoppingBag },
-    ]
+import { AlignJustify,CircleX } from 'lucide-react'
+interface Props {
+    idUsuario: string;
+    idCurso: string;
+}
+interface Video {
+    VideoId: number;
+    TituloVideo: string;
+}
+//        { nombre: "Video 1", src: `/Empleado/${idUsuario}/${idCurso}`, icon: Users },
+export const Sidebar = ({idUsuario, idCurso}: Props) => {
+    
+    const [Vistas, setVistas] = useState<Video[]>([]);
+    useEffect(()=>{
+        const obtenerVideos = async () => {
+            try {
+                const resp = await fetch(`/api/videos`,{
+                    method: "POST",
+                    body: JSON.stringify({idUsuario, idCurso})
+                });
+                const videos = await resp.json();
+                setVistas(videos);
+                console.log(videos);
+            } catch (error) {
+                console.error("Error al obtener los cursos:", error);
+            }
+        };
+        obtenerVideos();
+    },[idCurso, idUsuario])
     const [isOpen, setIsOpen] = useState(false);
     const hamburguesa = () => {
         setIsOpen(!isOpen);
@@ -30,8 +50,8 @@ export const Sidebar = () => {
                     {
                         Vistas.map((vista, id) => (
                             <div key={id} className='hover:bg-zinc-200 w-full px-4 py-2 text-gray-500 hover:text-black '>
-                                <Link href={vista.src} className='flex flex-row w-full text-base '>
-                                    <vista.icon className="mr-2 h-5 w-5" /> {vista.nombre}
+                                <Link href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`} className='flex flex-row w-full text-base '>
+                                    {vista.TituloVideo}
                                 </Link>
                             </div>
                         ))
@@ -57,8 +77,8 @@ export const Sidebar = () => {
                     </button>
                     {Vistas.map((vista, id) => (
                         <div key={id} className='hover:bg-zinc-200 w-full px-4 py-2 text-gray-500 hover:text-black '>
-                            <Link href={vista.src} className='flex flex-row w-full text-base ' onClick={()=>setIsOpen(false)} >
-                                <vista.icon className="mr-2 h-5 w-5" /> {vista.nombre}
+                            <Link href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`} className='flex flex-row w-full text-base ' onClick={()=>setIsOpen(false)} >
+                            {vista.TituloVideo}
                             </Link>
                         </div>
                     ))}
