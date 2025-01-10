@@ -9,10 +9,8 @@ export const Carts = ({id}:Props) => {
     useEffect(() => {
         const obtenerCursos = async () => {
             try {
-                const resp = await fetch("/api/cursos",{
-                    method: "POST",
-                    body: JSON.stringify({id})
-                });
+                const idCurso= id
+                const resp = await fetch(`/api/${idCurso}`);
                 const cursos = await resp.json();
                 setCursos(cursos);
                 console.log(cursos);

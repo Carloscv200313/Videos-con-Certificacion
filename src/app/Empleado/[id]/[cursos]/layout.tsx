@@ -14,8 +14,6 @@ export default async function CursosLayout({
     const { cursos, id } = await params
     return (
         <div className="flex md:flex-row flex-col md:h-screen">
-            {cursos}
-            {id}
             <Sidebar idUsuario= {id} idCurso={cursos} />
             <div className="overflow-y-auto w-full">{children}</div>
         </div>

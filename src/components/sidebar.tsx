@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { AlignJustify,CircleX } from 'lucide-react'
+import { AlignJustify, CircleX } from 'lucide-react'
 interface Props {
     idUsuario: string;
     idCurso: string;
@@ -10,17 +10,18 @@ interface Props {
 interface Video {
     VideoId: number;
     TituloVideo: string;
+    EstadoProgreso: boolean;
 }
 //        { nombre: "Video 1", src: `/Empleado/${idUsuario}/${idCurso}`, icon: Users },
-export const Sidebar = ({idUsuario, idCurso}: Props) => {
-    
+export const Sidebar = ({ idUsuario, idCurso }: Props) => {
+
     const [Vistas, setVistas] = useState<Video[]>([]);
-    useEffect(()=>{
+    useEffect(() => {
         const obtenerVideos = async () => {
             try {
-                const resp = await fetch(`/api/videos`,{
+                const resp = await fetch(`/api/videos`, {
                     method: "POST",
-                    body: JSON.stringify({idUsuario, idCurso})
+                    body: JSON.stringify({ idUsuario, idCurso })
                 });
                 const videos = await resp.json();
                 setVistas(videos);
@@ -30,7 +31,7 @@ export const Sidebar = ({idUsuario, idCurso}: Props) => {
             }
         };
         obtenerVideos();
-    },[idCurso, idUsuario])
+    }, [idCurso, idUsuario])
     const [isOpen, setIsOpen] = useState(false);
     const hamburguesa = () => {
         setIsOpen(!isOpen);
@@ -49,12 +50,23 @@ export const Sidebar = ({idUsuario, idCurso}: Props) => {
                 <div className='flex flex-col h-screen items-start justify-center w-full gap-4'>
                     {
                         Vistas.map((vista, id) => (
-                            <div key={id} className='hover:bg-zinc-200 w-full px-4 py-2 text-gray-500 hover:text-black '>
-                                <Link href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`} className='flex flex-row w-full text-base '>
-                                    {vista.TituloVideo}
-                                </Link>
+                            <div
+                                key={id}
+                                className={`${vista.EstadoProgreso ? "hover:bg-zinc-200 hover:text-black" : "cursor-not-allowed"
+                                    } w-full px-4 py-2 text-gray-500 `}
+                            >
+                                {vista.EstadoProgreso ? (
+                                    <Link
+                                        href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`}
+                                        className="flex flex-row w-full text-base"
+                                    >
+                                        {vista.TituloVideo}
+                                    </Link>
+                                ) : (
+                                    <span className="flex flex-row w-full text-base">{vista.TituloVideo}</span>
+                                )}
                             </div>
-                        ))
+                        ))                          
                     }
                 </div>
                 <footer>
@@ -77,8 +89,8 @@ export const Sidebar = ({idUsuario, idCurso}: Props) => {
                     </button>
                     {Vistas.map((vista, id) => (
                         <div key={id} className='hover:bg-zinc-200 w-full px-4 py-2 text-gray-500 hover:text-black '>
-                            <Link href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`} className='flex flex-row w-full text-base ' onClick={()=>setIsOpen(false)} >
-                            {vista.TituloVideo}
+                            <Link href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`} className='flex flex-row w-full text-base ' onClick={() => setIsOpen(false)} >
+                                {vista.TituloVideo}
                             </Link>
                         </div>
                     ))}

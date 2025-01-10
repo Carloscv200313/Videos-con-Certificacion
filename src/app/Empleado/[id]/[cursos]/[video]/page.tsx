@@ -4,12 +4,12 @@ import DefaultVideoProgressPlayer from "@/components/VideoProgressPlayer";
 export default async function Page({
     params,
 }: {
-    params: Promise<{ video: string }>
+    params: Promise<{ id: string, video: string, cursos: string }>
 }) {
-    const { video } = await params
+    const { id, video, cursos } = await params
     return (
         <div className="min-h-screen bg-gray-200 py-5 ">
-            <DefaultVideoProgressPlayer video={video} />
+            <DefaultVideoProgressPlayer video={video} id={id} cursos={cursos} />
             {/*<HeroVideoDialog
             className="dark:hidden block"
             animationStyle="from-center"
