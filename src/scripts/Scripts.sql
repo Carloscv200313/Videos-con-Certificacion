@@ -31,11 +31,17 @@ CREATE TABLE Videos (
 );
 
 ALTER TABLE Videos
+ADD estado BIT NOT NULL DEFAULT 0;
+
+
+
+
+ALTER TABLE Videos
 DROP CONSTRAINT FK_Videos_Usuarios;
 
 
 ALTER TABLE Videos
-DROP COLUMN idUsuario;
+DROP COLUMN estado;
 
 
 select * from Videos
