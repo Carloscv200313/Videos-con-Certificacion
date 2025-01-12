@@ -2,15 +2,24 @@
 import React, { useEffect,useState } from 'react'
 import { Cart } from './ui/Cart'
 interface Props {
-    id: string;
+    idEmpleado: string;
 }
-export const Carts = ({id}:Props) => {
-    const [cursos,setCursos] = useState([]);
+interface Curso {
+    Progreso : number;
+    Usuario : string;
+    CursoId : number;
+    NombreCurso : string;
+    DescripcionCurso: string;
+    VideosVistos: number;
+    CantidadVideos: number;
+    PrimerVideoId: number;
+}
+export const Carts = ({idEmpleado}:Props) => {
+    const [cursos,setCursos] = useState<Curso[]>([]);
     useEffect(() => {
         const obtenerCursos = async () => {
             try {
-                const idCurso= id
-                const resp = await fetch(`/api/${idCurso}`);
+                const resp = await fetch(`/api/${idEmpleado}`);
                 const cursos = await resp.json();
                 setCursos(cursos);
                 console.log(cursos);
@@ -20,14 +29,14 @@ export const Carts = ({id}:Props) => {
         };
     
         obtenerCursos();
-    }, [id]);
+    }, [idEmpleado]);
     
     return (
 <div className="flex justify-center items-center gap-10 flex-wrap">
         {
             cursos.map((curso,key) => (
                 <div key={key} >
-                    <Cart curso={curso} />
+                    <Cart curso={curso} idEmpleado={idEmpleado} />
                 </div>
             ))
         }

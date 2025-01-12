@@ -3,16 +3,16 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Progress } from "@/components/ui/progress"
 
 interface Props {
-  video: string
-  id: string
-  cursos: string
+  idVideo: string
+  idEmpleado: string
+  idCursos: string
 }
 
 interface Video {
   url: string
 }
 
-export default function DefaultVideoProgressPlayer({ video, id , cursos}: Props) {
+export default function DefaultVideoProgressPlayer({ idVideo, idEmpleado , idCursos}: Props) {
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [videos, setVideo] = useState<Video[]>([])
@@ -22,8 +22,10 @@ export default function DefaultVideoProgressPlayer({ video, id , cursos}: Props)
   useEffect(() => {
     const obtenerVideo = async () => {
       try {
-        const idCurso = id
-        const datos = await fetch(`/api/${idCurso}/${video}`)
+        const datos = await fetch(`/api/${idEmpleado}`, {
+          method: "POST",
+          body: JSON.stringify({ idCursos, idVideo })
+        })
         const dato = await datos.json()
         setVideo(dato)
         console.log(dato)
@@ -32,7 +34,7 @@ export default function DefaultVideoProgressPlayer({ video, id , cursos}: Props)
       }
     }
     obtenerVideo()
-  }, [video, id])
+  }, [idCursos, idVideo, idEmpleado])
 
   const handleTimeUpdate = async () => {
     if (videoRef.current) {

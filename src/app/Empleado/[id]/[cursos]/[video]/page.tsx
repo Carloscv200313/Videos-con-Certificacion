@@ -9,7 +9,7 @@ export default async function Page({
     const { id, video, cursos } = await params
     return (
         <div className="min-h-screen bg-gray-200 py-5 ">
-            <DefaultVideoProgressPlayer video={video} id={id} cursos={cursos} />
+            <DefaultVideoProgressPlayer idVideo={video} idEmpleado={id} idCursos={cursos} />
             {/*<HeroVideoDialog
             className="dark:hidden block"
             animationStyle="from-center"

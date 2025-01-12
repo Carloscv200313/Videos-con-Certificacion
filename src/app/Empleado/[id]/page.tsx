@@ -9,7 +9,7 @@ export default async function Page({
     const { id } = await params
     return (
         <div className="min-h-screen bg-gray-200 py-5 ">
-            <Carts id={id} />
+            <Carts idEmpleado={id} />
         </div>
     )
 }

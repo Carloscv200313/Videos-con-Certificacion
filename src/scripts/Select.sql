@@ -10,7 +10,8 @@ FROM
 SELECT 
     id AS CursoId, 
     nombre AS NombreCurso, 
-    descripcion AS DescripcionCurso
+    descripcion AS DescripcionCurso,
+	cantidadVideos
 FROM 
     Cursos;
 
@@ -37,9 +38,5 @@ FROM
     Progresos;
 
 
-SELECT 
-    alumnoId AS UsuarioId, 
-    videoId AS VideoId, 
-    estado AS EstadoVideo
-FROM 
-    ProgresoVideo;
+
+SELECT * FROM ProgresoVideo

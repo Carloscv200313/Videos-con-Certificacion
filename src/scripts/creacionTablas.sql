@@ -12,6 +12,7 @@ CREATE TABLE Cursos (
     id INT PRIMARY KEY Identity(1,1),
     nombre VARCHAR(100),
     descripcion TEXT,
+	cantidadVideos INT 
 );
 
 -- Creación de la tabla Videos

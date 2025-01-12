@@ -2,18 +2,20 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { AlignJustify, CircleX } from 'lucide-react'
+import { AlignJustify, CircleX ,CircleCheck } from 'lucide-react'
 interface Props {
     idUsuario: string;
-    idCurso: string;
+    idCurso: string
 }
 interface Video {
-    VideoId: number;
-    TituloVideo: string;
-    EstadoProgreso: boolean;
+    VideoId: number; 
+    Titulo: string;
+    Link: string
+    Orden:number
+    Estado: boolean
 }
 //        { nombre: "Video 1", src: `/Empleado/${idUsuario}/${idCurso}`, icon: Users },
-export const Sidebar = ({ idUsuario, idCurso }: Props) => {
+export const Sidebar = ({ idUsuario, idCurso}: Props) => {
 
     const [Vistas, setVistas] = useState<Video[]>([]);
     useEffect(() => {
@@ -52,18 +54,18 @@ export const Sidebar = ({ idUsuario, idCurso }: Props) => {
                         Vistas.map((vista, id) => (
                             <div
                                 key={id}
-                                className={`${vista.EstadoProgreso ? "hover:bg-zinc-200 hover:text-black" : "cursor-not-allowed"
+                                className={`${vista.Estado ? "hover:bg-zinc-200 hover:text-black" : "cursor-not-allowed"
                                     } w-full px-4 py-2 text-gray-500 `}
                             >
-                                {vista.EstadoProgreso ? (
+                                {vista.Estado ? (
                                     <Link
                                         href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`}
-                                        className="flex flex-row w-full text-base"
+                                        className="flex flex-row w-full text-base justify-center items-center"
                                     >
-                                        {vista.TituloVideo}
+                                        {vista.Titulo} <CircleCheck className='text-emerald-500'/>
                                     </Link>
                                 ) : (
-                                    <span className="flex flex-row w-full text-base">{vista.TituloVideo}</span>
+                                    <span className="flex flex-row w-full text-base">{vista.Titulo}</span>
                                 )}
                             </div>
                         ))                          
@@ -90,7 +92,7 @@ export const Sidebar = ({ idUsuario, idCurso }: Props) => {
                     {Vistas.map((vista, id) => (
                         <div key={id} className='hover:bg-zinc-200 w-full px-4 py-2 text-gray-500 hover:text-black '>
                             <Link href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`} className='flex flex-row w-full text-base ' onClick={() => setIsOpen(false)} >
-                                {vista.TituloVideo}
+                                {vista.Titulo}
                             </Link>
                         </div>
                     ))}

@@ -5,8 +5,8 @@ export async function POST(req: NextRequest) {
     const conx = await Conex();
     const {idUsuario, idCurso} = await req.json();
     const result = await conx.request()
-        .input("UsuarioId", sql.Int(),idUsuario)
-        .input("CursoId", sql.Int(),idCurso)
-        .execute("ObtenerVideosPorCursoConProgreso")
+        .input("idUsuario", sql.Int(),idUsuario)
+        .input("idCurso", sql.Int(),idCurso)
+        .execute("ObtenerVideos")
     return NextResponse.json(result.recordset);
 }
