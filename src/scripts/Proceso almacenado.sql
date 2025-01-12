@@ -140,6 +140,17 @@ END;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 CREATE OR ALTER PROCEDURE ReiniciarCurso(
     @idUsuario INT,
     @idCurso INT
@@ -213,4 +224,152 @@ BEGIN
         v.cursoId = @idCurso
     ORDER BY 
         v.orden; -- Ordenar los videos según el campo 'orden'
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE IdVideo(
+    @idCurso INT,
+    @idUsuario INT,
+	@idVideo INT
+)
+AS
+BEGIN
+    -- Seleccionar los videos del curso junto con su estado para el usuario especificado
+    SELECT 
+        v.id AS VideoId,
+        v.titulo AS Titulo,
+        v.link AS Link,
+        v.orden AS Orden,
+        ISNULL(pv.estado, 0) AS Estado -- Si no hay registro en ProgresoVideo, el estado será 0
+    FROM 
+        Videos v
+    LEFT JOIN 
+        ProgresoVideo pv ON v.id = pv.videoId AND pv.alumnoId = @idUsuario
+    WHERE 
+        v.cursoId = @idCurso AND v.id= @idVideo AND pv.estado= 1
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE ActualizarSiguienteVideo(
+    @idCurso INT,
+    @idUsuario INT,
+    @idVideo INT
+)
+AS
+BEGIN
+    -- Declarar una variable para almacenar el ID del siguiente video
+    DECLARE @idSiguienteVideo INT;
+
+    -- Buscar el ID del siguiente video basado en el campo 'orden'
+    SELECT TOP 1 @idSiguienteVideo = v.id
+    FROM Videos v
+    WHERE v.cursoId = @idCurso AND v.orden > (
+        SELECT orden FROM Videos WHERE id = @idVideo
+    )
+    ORDER BY v.orden ASC;
+
+    -- Si no hay un siguiente video, salir del procedimiento
+    IF @idSiguienteVideo IS NULL
+    BEGIN
+        SELECT * 
+		    FROM Videos 
+		    WHERE id = @idVideo;
+        RETURN;
+    END
+
+    -- Verificar si el estado del siguiente video ya está activo
+    IF EXISTS (
+        SELECT 1 
+        FROM ProgresoVideo 
+        WHERE alumnoId = @idUsuario AND videoId = @idSiguienteVideo AND estado = 1
+    )
+    BEGIN
+			SELECT * 
+		    FROM Videos 
+		    WHERE id = @idSiguienteVideo;
+        RETURN;
+    END
+
+    -- Activar el estado del siguiente video en la tabla ProgresoVideo
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM ProgresoVideo 
+        WHERE alumnoId = @idUsuario AND videoId = @idSiguienteVideo
+    )
+    BEGIN
+        INSERT INTO ProgresoVideo (alumnoId, videoId, estado)
+        VALUES (@idUsuario, @idSiguienteVideo, 1);
+    END
+    ELSE
+    BEGIN
+        UPDATE ProgresoVideo
+        SET estado = 1
+        WHERE alumnoId = @idUsuario AND videoId = @idSiguienteVideo;
+    END
+
+    -- Incrementar el progreso (cantidad de videos vistos) en la tabla Progresos
+    UPDATE Progresos
+    SET progreso = progreso + 1
+    WHERE alumnoId = @idUsuario AND cursoId = @idCurso;
+
+    -- Devolver el siguiente video activado
+    SELECT * 
+    FROM Videos 
+    WHERE id = @idSiguienteVideo;
 END;

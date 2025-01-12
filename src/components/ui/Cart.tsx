@@ -17,21 +17,23 @@ interface Props {
 export const Cart = ({ curso ,idEmpleado}: Props) => {
     const Progreso = (curso.VideosVistos / curso.CantidadVideos) * 100;
     const PrimerVideo= async()=>{
-        try {
-            const resp = await fetch(`/api/${idEmpleado}`,{
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    CursoId: curso.CursoId,
-                    PrimerVideoId: curso.PrimerVideoId,
-                }),
-            });
-            const cursos = await resp.json();
-            console.log(cursos);
-        } catch (error) {
-            console.error("Error al obtener los cursos:", error);
+        if(curso.VideosVistos < 1){
+            try {
+                const resp = await fetch(`/api/${idEmpleado}`,{
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        CursoId: curso.CursoId,
+                        PrimerVideoId: curso.PrimerVideoId,
+                    }),
+                });
+                const cursos = await resp.json();
+                console.log(cursos);
+            } catch (error) {
+                console.error("Error al obtener los cursos:", error);
+            }
         }
     }
     return (

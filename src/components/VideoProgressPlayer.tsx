@@ -1,31 +1,41 @@
 'use client'
+import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
-import { Progress } from "@/components/ui/progress"
 
 interface Props {
   idVideo: string
-  idEmpleado: string
-  idCursos: string
+  idUsuario: string
+  idCurso: string
 }
 
 interface Video {
-  url: string
+  VideoId: number
+  Titulo: string
+  Link: string
+  Orden: number
+  Estado: boolean
+  idVideoSiguiente: number
 }
 
-export default function DefaultVideoProgressPlayer({ idVideo, idEmpleado , idCursos}: Props) {
-  const [progress, setProgress] = useState(0)
-  const [duration, setDuration] = useState(0)
+interface SiguienteVideo{
+  id: number
+  titulo: string
+} 
+
+export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso}: Props) {
   const [videos, setVideo] = useState<Video[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [siguienteVideo, setSiguienteVideo] = useState<SiguienteVideo[]>([{id: 0, titulo: ""}])
   const [isNextButtonVisible, setNextButtonVisible] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const obtenerVideo = async () => {
       try {
-        const datos = await fetch(`/api/${idEmpleado}`, {
+        const datos = await fetch(`/api/videos/${idVideo}`, {
           method: "POST",
-          body: JSON.stringify({ idCursos, idVideo })
-        })
+          body: JSON.stringify({ idUsuario, idCurso ,siguienteVideo : false})
+      });
         const dato = await datos.json()
         setVideo(dato)
         console.log(dato)
@@ -34,91 +44,48 @@ export default function DefaultVideoProgressPlayer({ idVideo, idEmpleado , idCur
       }
     }
     obtenerVideo()
-  }, [idCursos, idVideo, idEmpleado])
-
-  const handleTimeUpdate = async () => {
-    if (videoRef.current) {
-      const currentTime = videoRef.current.currentTime
-      const duration = videoRef.current.duration
-      const calculatedProgress = (currentTime / duration) * 100
-      setProgress(calculatedProgress)
-      setDuration(duration)
-
-      // Enviar el tiempo visualizado al servidor
-      try {
-        const idCurso = id
-        await fetch(`/api/${idCurso}/${video}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tiempoVisto: currentTime,
-            cursos
-          })
-        })
-      } catch (error) {
-        console.error("Error al guardar el progreso:", error)
-      }
-    }
-  }
-
-  const handleVideoEnd = () => {
-    
-    setNextButtonVisible(true)
-  }
-
+  }, [idCurso, idVideo, idUsuario])
   const handleNextVideo = async () => {
-    // Realizar la petición para habilitar el siguiente video
     try {
-      const response = await fetch(`/api/siguienteVideo`, {
+      const resp = await fetch(`/api/videos/${idVideo}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idCurso: id, idVideo: video })
-      })
-      const nextVideoData = await response.json()
-      console.log(nextVideoData)
-      // Aquí podrías actualizar el estado para cargar el siguiente video
+        body: JSON.stringify({ idUsuario, idCurso, siguienteVideo: true })
+    });
+      const video = await resp.json()
+      setSiguienteVideo(video)
+      console.log(video)
     } catch (error) {
-      console.error("Error al obtener el siguiente video:", error)
+      console.error("Error al obtener el video:", error)
     }
+    setNextButtonVisible(false)
+    videoRef.current?.play()
   }
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60)
-    const seconds = Math.floor(time % 60)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
-
-  const remainingTime = duration - (progress / 100 * duration)
-
   return (
+    
     <div className="max-w-md mx-auto mt-0 p-6 bg-white rounded-lg shadow-md">
-      <Progress value={progress} className="w-full mb-2" aria-label="Progreso del video" />
       {videos.length > 0 ? (
         <video
           ref={videoRef}
           className="w-full mb-4 rounded"
-          onTimeUpdate={handleTimeUpdate}
-          onEnded={handleVideoEnd}
+          onEnded={()=> setNextButtonVisible(true)}
           controls
+          disablePictureInPicture
           aria-label="Video predeterminado"
-          src={videos[0].url}
+          src={videos[0].Link}
+
         >
           Tu navegador no soporta el elemento de video.
         </video>
       ) : (
         <p className="text-gray-600">Cargando video...</p>
       )}
-      <div className="flex justify-between text-sm text-gray-600">
-        <span>Progreso: {progress.toFixed(1)}%</span>
-        <span>Tiempo restante: {formatTime(remainingTime)}</span>
-      </div>
-      {isNextButtonVisible && (
-        <button
+      {isNextButtonVisible &&  videos[0].idVideoSiguiente && (
+        <Link 
           onClick={handleNextVideo}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-        >
-          Siguiente Video
-        </button>
+          href={`/Empleado/${idUsuario}/${idCurso}/${videos[0].idVideoSiguiente}`}> 
+          Siguiente video
+        </Link>
       )}
     </div>
   )
