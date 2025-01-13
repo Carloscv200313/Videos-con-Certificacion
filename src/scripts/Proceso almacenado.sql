@@ -255,27 +255,38 @@ END;
 
 
 
-
 CREATE OR ALTER PROCEDURE IdVideo(
     @idCurso INT,
     @idUsuario INT,
-	@idVideo INT
+    @idVideo INT
 )
 AS
 BEGIN
-    -- Seleccionar los videos del curso junto con su estado para el usuario especificado
+    -- Declarar una variable para almacenar el ID del siguiente video
+    DECLARE @idVideoSiguiente INT;
+
+    -- Buscar el ID del siguiente video basado en el campo 'orden'
+    SELECT TOP 1 @idVideoSiguiente = v.id
+    FROM Videos v
+    WHERE v.cursoId = @idCurso AND v.orden > (
+        SELECT orden FROM Videos WHERE id = @idVideo
+    )
+    ORDER BY v.orden ASC;
+
+    -- Seleccionar el video actual con el campo adicional para el siguiente video
     SELECT 
         v.id AS VideoId,
         v.titulo AS Titulo,
         v.link AS Link,
         v.orden AS Orden,
-        ISNULL(pv.estado, 0) AS Estado -- Si no hay registro en ProgresoVideo, el estado será 0
+        ISNULL(pv.estado, 0) AS Estado, -- Si no hay registro en ProgresoVideo, el estado será 0
+        @idVideoSiguiente AS idVideoSiguiente -- Agregar el ID del siguiente video si existe
     FROM 
         Videos v
     LEFT JOIN 
         ProgresoVideo pv ON v.id = pv.videoId AND pv.alumnoId = @idUsuario
     WHERE 
-        v.cursoId = @idCurso AND v.id= @idVideo AND pv.estado= 1
+        v.id = @idVideo AND pv.estado=1
 END;
 
 
