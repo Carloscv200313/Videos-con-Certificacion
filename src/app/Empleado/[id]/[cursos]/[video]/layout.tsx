@@ -9,12 +9,12 @@ export default async function CursosLayout({
     params
 }: {
     children: React.ReactNode
-    params: Promise<{ cursos: string, id: string }>
+    params: Promise<{ cursos: string, id: string, video: string }>
 }) {
-    const { cursos, id } = await params
+    const { cursos, id, video } = await params
     return (
         <div className="flex md:flex-row flex-col md:h-screen">
-            <Sidebar idUsuario= {id} idCurso={cursos}  />
+            <Sidebar idUsuario= {id} idCurso={cursos} idVideo={video} />
             <div className="overflow-y-auto w-full">{children}</div>
         </div>
     )

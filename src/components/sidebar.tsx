@@ -6,6 +6,7 @@ import { AlignJustify, CircleX ,CircleCheck } from 'lucide-react'
 interface Props {
     idUsuario: string;
     idCurso: string
+    idVideo: string
 }
 interface Video {
     VideoId: number; 
@@ -15,7 +16,7 @@ interface Video {
     Estado: boolean
 }
 //        { nombre: "Video 1", src: `/Empleado/${idUsuario}/${idCurso}`, icon: Users },
-export const Sidebar = ({ idUsuario, idCurso}: Props) => {
+export const Sidebar = ({ idUsuario, idCurso, idVideo}: Props) => {
 
     const [Vistas, setVistas] = useState<Video[]>([]);
     useEffect(() => {
@@ -33,7 +34,7 @@ export const Sidebar = ({ idUsuario, idCurso}: Props) => {
             }
         };
         obtenerVideos();
-    }, [idCurso, idUsuario])
+    }, [idCurso, idUsuario, idVideo]);
     const [isOpen, setIsOpen] = useState(false);
     const hamburguesa = () => {
         setIsOpen(!isOpen);
