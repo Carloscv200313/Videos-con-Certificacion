@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
-
+import Loader from './ui/Carga';
 interface Props {
   idVideo: string
   idUsuario: string
@@ -29,6 +29,8 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
   const [isNextButtonVisible, setNextButtonVisible] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
+      const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const obtenerVideo = async () => {
       try {
@@ -41,7 +43,9 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
         console.log(dato)
       } catch (error) {
         console.error("Error al obtener el video:", error)
-      }
+      }finally {
+        setIsLoading(false); // Cambiar estado después de cargar los datos
+    }
     }
     obtenerVideo()
   }, [idCurso, idVideo, idUsuario])
@@ -61,8 +65,11 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
     videoRef.current?.play()
   }
   return (
-    
-    <div className="max-w-md mx-auto mt-0 p-6 bg-white rounded-lg shadow-md">
+    <>
+    {
+      isLoading ? <Loader /> : null
+  }
+    <div className={`${isLoading ? "hidden" : ""} max-w-md mx-auto mt-0 p-6 bg-white rounded-lg shadow-md`}>
       {videos.length > 0 ? (
         <video
           ref={videoRef}
@@ -88,5 +95,6 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
         </Link>
       )}
     </div>
+    </>
   )
 }
