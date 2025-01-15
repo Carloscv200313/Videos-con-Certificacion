@@ -384,3 +384,52 @@ BEGIN
     FROM Videos 
     WHERE id = @idSiguienteVideo;
 END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE ObtenerProgresoCurso
+    @CursoId Int
+AS
+BEGIN
+    SELECT 
+        U.id AS UsuarioId,
+        U.nombre AS NombreUsuario,
+        P.progreso AS VideosVistos,
+        P.examenHabilitado AS ExamenHabilitado,
+        P.notaFinal AS NotaFinalCurso,
+		C.cantidadVideos AS CantidadCursos
+    FROM 
+        Usuarios U
+    INNER JOIN 
+        Progresos P ON U.id = P.alumnoId
+	INNER JOIN 
+        Cursos C ON C.id = P.cursoId
+    WHERE 
+        P.cursoId = @CursoId
+    ORDER BY 
+        U.id;
+END;

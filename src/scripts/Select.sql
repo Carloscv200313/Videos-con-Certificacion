@@ -35,7 +35,8 @@ SELECT
     examenHabilitado AS ExamenHabilitado, 
     notaFinal AS NotaFinalCurso
 FROM 
-    Progresos;
+    Progresos
+
 
 
 

@@ -28,9 +28,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
   const [siguienteVideo, setSiguienteVideo] = useState<SiguienteVideo[]>([{id: 0, titulo: ""}])
   const [isNextButtonVisible, setNextButtonVisible] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
-
-      const [isLoading, setIsLoading] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const obtenerVideo = async () => {
       try {
@@ -49,6 +47,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
     }
     obtenerVideo()
   }, [idCurso, idVideo, idUsuario])
+  
   const handleNextVideo = async () => {
     try {
       const resp = await fetch(`/api/videos/${idVideo}`, {
@@ -62,7 +61,6 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
       console.error("Error al obtener el video:", error)
     }
     setNextButtonVisible(false)
-    videoRef.current?.play()
   }
   return (
     <>
@@ -79,7 +77,6 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
           disablePictureInPicture
           aria-label="Video predeterminado"
           src={videos[0].Link}
-
         >
           Tu navegador no soporta el elemento de video.
         </video>

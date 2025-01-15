@@ -31,7 +31,7 @@ const SidebarMenu = ({ vistas, idUsuario, idCurso }: { vistas: Video[]; idUsuari
                 {vista.Estado ? (
                     <Link
                         href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`}
-                        className="flex flex-row w-full text-base justify-between items-start"
+                        className="flex flex-row w-full text-base justify-between items-start line-clamp-1 "
                     >
                         {vista.Titulo}
                     </Link>
