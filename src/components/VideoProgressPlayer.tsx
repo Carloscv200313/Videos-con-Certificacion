@@ -67,11 +67,11 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
     {
       isLoading ? <Loader /> : null
   }
-    <div className={`${isLoading ? "hidden" : ""} max-w-md mx-auto mt-0 p-6 bg-white rounded-lg shadow-md`}>
+    <div className={`${isLoading ? "hidden" : "flex"} max-w-md mx-auto mt-0 p-0 bg-[#1d1238] rounded-lg  flex-col justify-center items-center`}>
       {videos.length > 0 ? (
         <video
           ref={videoRef}
-          className="w-full mb-4 rounded"
+          className="w-2/3 mb-2 rounded"
           onEnded={()=> setNextButtonVisible(true)}
           controls
           disablePictureInPicture
@@ -86,7 +86,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
       {isNextButtonVisible &&  videos[0].idVideoSiguiente && (
         <Link 
           onClick={handleNextVideo}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          className="mt-0 px-4 py-2 bg-[#0f0a1e] text-white rounded hover:bg-[#0f0a1e]"
           href={`/Empleado/${idUsuario}/${idCurso}/${videos[0].idVideoSiguiente}`}> 
           Siguiente video
         </Link>

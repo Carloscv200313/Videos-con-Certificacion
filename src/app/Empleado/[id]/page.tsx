@@ -8,7 +8,7 @@ export default async function Page({
 }) {
     const { id } = await params
     return (
-        <div className="min-h-screen bg-gray-200 py-5 ">
+        <div className="min-h-screen bg-[#1d1238] text-white py-5 ">
             <Carts idEmpleado={id} />
         </div>
     )

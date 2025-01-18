@@ -6,7 +6,7 @@ export default async function Page({
 }) {
     const { id, video, cursos } = await params
     return (
-        <div className="min-h-screen bg-gray-200 py-5 ">
+        <div className="min-h-screen bg-[#1d1238] py-5 ">
             <DefaultVideoProgressPlayer idVideo={video} idUsuario={id} idCurso={cursos} />
         </div>
     )

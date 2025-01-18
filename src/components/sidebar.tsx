@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { AlignJustify, CircleX } from "lucide-react";
+import { AlignJustify, CircleX,CircleCheckBig  } from "lucide-react";
 import Loader from "./ui/Carga";
 
 interface Props {
@@ -20,34 +20,39 @@ interface Video {
 }
 
 const SidebarMenu = ({ vistas, idUsuario, idCurso }: { vistas: Video[]; idUsuario: string; idCurso: string }) => (
-    <div className="flex flex-col h-full items-start justify-start w-full gap-0">
-        {vistas.map((vista, id) => (
-            <div
-                key={id}
-                className={`${
-                    vista.Estado ? "hover:bg-zinc-200 text-black" : "cursor-not-allowed bg-neutral-200"
-                } w-full px-2 py-4 text-gray-500`}
-            >
-                {vista.Estado ? (
-                    <Link
-                        href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`}
-                        className="flex flex-row w-full text-base justify-between items-start line-clamp-1 "
-                    >
+<div className="flex flex-col h-full items-start justify-start w-full gap-0">
+    {vistas.map((vista, id) => (
+        <div
+            key={id}
+            className={`${
+                vista.Estado ? "text-white" : "cursor-not-allowed bg-neutral-800"
+            } w-full px-2 py-4 text-gray-500`}
+        >
+            {vista.Estado ? (
+                <Link
+                    href={`/Empleado/${idUsuario}/${idCurso}/${vista.VideoId}`}
+                    className="flex flex-row w-full text-base justify-between items-center"
+                >
+                    <span className="line-clamp-2 overflow-hidden text-ellipsis">
                         {vista.Titulo}
-                    </Link>
-                ) : (
-                    <span className="flex flex-row w-full text-base">{vista.Titulo}</span>
-                )}
-            </div>
-        ))}
-    </div>
+                    </span>
+                    <CircleCheckBig className="text-green-600 w-5 h-5 flex-shrink-0" />
+                </Link>
+            ) : (
+                <span className="flex flex-row w-full text-base line-clamp-2 overflow-hidden text-ellipsis">
+                    {vista.Titulo}
+                </span>
+            )}
+        </div>
+    ))}
+</div>
+
 );
 
 export const Sidebar = ({ idUsuario, idCurso, idVideo }: Props) => {
     const [vistas, setVistas] = useState<Video[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
-
     useEffect(() => {
         const obtenerVideos = async () => {
             try {
@@ -73,7 +78,7 @@ export const Sidebar = ({ idUsuario, idCurso, idVideo }: Props) => {
 
     return (
         <>
-            <nav className="h-screen md:flex flex-col gap-2 py-10 w-44 hidden ">
+            <nav className="h-screen md:flex flex-col gap-2 py-10 w-44 hidden bg-[#0f0a1e] ">
                 <Image
                     src={"/logo.png"}
                     alt={"logo"}

@@ -41,7 +41,7 @@ export const Carts = ({ idEmpleado }: Props) => {
                 isLoading ? <Loader /> : null
             }
             <div className={`${isLoading ? "hidden" : ""}`} >
-                <h1 className='text-3xl font-bold text-center mb-12'>
+                <h1 className='text-4xl font-bold font-serif text-center my-10 '>
                     Bienvenido {cursos.length > 0 ? cursos[0].Usuario : ''} a tus cursos
                 </h1>
                 <div className="grid grid-cols-1 px-10 md:grid-cols-3 lg:grid-cols-4 gap-10 flex-wrap">
