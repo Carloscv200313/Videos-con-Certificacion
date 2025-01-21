@@ -81,6 +81,46 @@ END;
 
 
 
+CREATE OR ALTER PROCEDURE VideoTerminado(
+    @idUsuario INT,
+    @idVideo INT,
+    @idCurso INT
+)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        BEGIN
+            -- Si el video está marcado como visto, incrementar el progreso del curso
+            UPDATE Progresos
+            SET progreso = progreso + 1
+            WHERE alumnoId = @idUsuario AND cursoId = @idCurso;
+			        -- Actualizar el estado del video como visto
+			UPDATE ProgresoVideo
+			SET VideoVisto = 1
+			WHERE alumnoId = @idUsuario AND videoId = @idVideo;
+		END
+        -- Verificar si las actualizaciones afectaron filas
+        IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'No se pudo actualizar el estado del video.', 1;
+        END
+
+        -- Confirmar la transacción
+        COMMIT TRANSACTION;
+
+        -- Retornar mensaje como resultado
+        SELECT '¡El video ha terminado exitosamente!' AS Mensaje;
+    END TRY
+    BEGIN CATCH
+        -- En caso de error, revertir la transacción
+        ROLLBACK TRANSACTION;
+
+        -- Re-lanzar el error para depuración
+        THROW;
+    END CATCH
+END;
 
 
 
@@ -96,6 +136,7 @@ END;
 
 
 
+        
 
 
 CREATE OR ALTER PROCEDURE ActivarCurso(
@@ -109,9 +150,7 @@ BEGIN
 
     BEGIN TRY
         -- Actualizar el progreso del curso en la tabla Progresos
-        UPDATE Progresos
-        SET progreso = progreso + 1
-        WHERE alumnoId = @idUsuario AND cursoId = @idCurso;
+
 
         -- Cambiar el estado del video en la tabla ProgresoVideo
         UPDATE ProgresoVideo
@@ -167,7 +206,7 @@ BEGIN
 
         -- Desactivar el estado de todos los videos del curso en la tabla ProgresoVideo
         UPDATE ProgresoVideo
-        SET estado = 0
+        SET estado = 0 , VideoVisto=0
         WHERE alumnoId = @idUsuario AND videoId IN (
             SELECT id FROM Videos WHERE cursoId = @idCurso
         );
@@ -215,7 +254,8 @@ BEGIN
         v.titulo AS Titulo,
         v.link AS Link,
         v.orden AS Orden,
-        ISNULL(pv.estado, 0) AS Estado -- Si no hay registro en ProgresoVideo, el estado será 0
+        ISNULL(pv.estado, 0) AS Estado,-- Si no hay registro en ProgresoVideo, el estado será 0
+		pv.VideoVisto
     FROM 
         Videos v
     LEFT JOIN 
@@ -279,6 +319,7 @@ BEGIN
         v.titulo AS Titulo,
         v.link AS Link,
         v.orden AS Orden,
+		ISNULL(pv.VideoVisto,0) AS VideoVisto,
         ISNULL(pv.estado, 0) AS Estado, -- Si no hay registro en ProgresoVideo, el estado será 0
         @idVideoSiguiente AS idVideoSiguiente -- Agregar el ID del siguiente video si existe
     FROM 
@@ -374,10 +415,7 @@ BEGIN
         WHERE alumnoId = @idUsuario AND videoId = @idSiguienteVideo;
     END
 
-    -- Incrementar el progreso (cantidad de videos vistos) en la tabla Progresos
-    UPDATE Progresos
-    SET progreso = progreso + 1
-    WHERE alumnoId = @idUsuario AND cursoId = @idCurso;
+
 
     -- Devolver el siguiente video activado
     SELECT * 
@@ -421,7 +459,8 @@ BEGIN
         P.progreso AS VideosVistos,
         P.examenHabilitado AS ExamenHabilitado,
         P.notaFinal AS NotaFinalCurso,
-		C.cantidadVideos AS CantidadCursos
+		C.cantidadVideos AS CantidadCursos,
+		C.nombre AS NombreCurso
     FROM 
         Usuarios U
     INNER JOIN 

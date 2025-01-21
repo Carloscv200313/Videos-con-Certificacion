@@ -24,6 +24,7 @@ interface Datos {
     ExamenHabilitado: boolean;
     NotaFinalCurso: number;
     CantidadCursos: number;
+    NombreCurso: string;
 }
 
 export const TablaCursos = ({ CursoId }: Prop) => {
@@ -65,6 +66,8 @@ export const TablaCursos = ({ CursoId }: Prop) => {
         return <Error/>
     }
     return (
+        <>
+        <h1 className="text-white text-6xl font-serif mb-10">{datos[0].NombreCurso}:</h1>
         <Table>
             <TableHeader>
                 <TableRow className="text-white">
@@ -112,5 +115,6 @@ export const TablaCursos = ({ CursoId }: Prop) => {
                 ))}
             </TableBody>
         </Table>
+        </>
     );
 };

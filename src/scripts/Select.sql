@@ -41,3 +41,10 @@ FROM
 
 
 SELECT * FROM ProgresoVideo
+
+ALTER TABLE ProgresoVideo
+ADD VideoVisto BIT DEFAULT 0;
+
+
+UPDATE ProgresoVideo
+SET VideoVisto = 0;

@@ -18,13 +18,16 @@ export const Cursos = () => {
         obtenerCursor()
     }, [])
     return (
-        <div className="grid grid-cols-1 px-10 pt-32 md:grid-cols-3 lg:grid-cols-3 gap-10 flex-wrap">
-            {
-                cursos.map((curso, index) => (
-                    <div key={index}>
-                        <Curso curso={curso} />
-                    </div>))
-            }
+        <div className='flex flex-col items-center gap-10 pt-10'>
+            <h1 className="text-white text-6xl font-serif w-full text-center">Bienvenido Carlos Calderon</h1>
+            <div className="grid grid-cols-1 px-10 md:grid-cols-3 lg:grid-cols-3 gap-10 flex-wrap">
+                {
+                    cursos.map((curso, index) => (
+                        <div key={index}>
+                            <Curso curso={curso} />
+                        </div>))
+                }
+            </div>
         </div>
     )
 }

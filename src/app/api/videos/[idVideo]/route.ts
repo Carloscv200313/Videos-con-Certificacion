@@ -24,6 +24,21 @@ export async function POST(request: NextRequest,{ params }: { params: Promise<{ 
 
 
 
+export async function PUT(request: NextRequest,{ params }: { params: Promise<{ idVideo: string }> }
+) {
+    const idVideo= (await params).idVideo;
+    const conx = await Conex();
+    const {idUsuario, idCurso} = await request.json();
+    const result = await conx.request()
+        .input("idUsuario", sql.Int(),idUsuario)
+        .input("idVideo", sql.Int(),idVideo)
+        .input("idCurso", sql.Int(),idCurso)
+        .execute("VideoTerminado")
+    return NextResponse.json(result.recordset);
+}
+
+
+
 
 
 

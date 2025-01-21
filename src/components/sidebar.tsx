@@ -17,6 +17,7 @@ interface Video {
     Link: string;
     Orden: number;
     Estado: boolean;
+    VideoVisto: boolean;
 }
 
 const SidebarMenu = ({ vistas, idUsuario, idCurso }: { vistas: Video[]; idUsuario: string; idCurso: string }) => (
@@ -36,7 +37,9 @@ const SidebarMenu = ({ vistas, idUsuario, idCurso }: { vistas: Video[]; idUsuari
                     <span className="line-clamp-2 overflow-hidden text-ellipsis">
                         {vista.Titulo}
                     </span>
-                    <CircleCheckBig className="text-green-600 w-5 h-5 flex-shrink-0" />
+                    {
+                        vista.VideoVisto ? <CircleCheckBig className="text-green-600 w-5 h-5 flex-shrink-0" /> :""
+                    }
                 </Link>
             ) : (
                 <span className="flex flex-row w-full text-base line-clamp-2 overflow-hidden text-ellipsis">
