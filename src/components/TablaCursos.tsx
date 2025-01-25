@@ -36,8 +36,9 @@ export const TablaCursos = ({ CursoId }: Prop) => {
             try {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/cursos`, {
                     method: "POST",
+                    credentials: 'include', // Incluye las cookies en la solicitud
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ CursoId }),
                 });

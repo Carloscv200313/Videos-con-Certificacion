@@ -8,6 +8,7 @@ export const Cursos = () => {
         const obtenerCursor = async () => {
             try {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/cursos`,{
+                    method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                     },

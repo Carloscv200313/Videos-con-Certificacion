@@ -62,6 +62,10 @@ export const Sidebar = ({ idUsuario, idCurso, idVideo }: Props) => {
                 const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos`, {
                     method: "POST",
                     body: JSON.stringify({ idUsuario, idCurso }),
+                    credentials: 'include', // Incluye las cookies en la solicitud
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 });
                 const videos = await resp.json();
                 setVistas(videos);

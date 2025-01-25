@@ -23,22 +23,34 @@ export const Carts = ({ idEmpleado }: Props) => {
     useEffect(() => {
         const obtenerCursos = async () => {
             try {
-                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/${idEmpleado}`, {
-                    method: 'GET',
-                    credentials: 'include', // Asegura que las cookies se incluyan
-                });
+                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/${idEmpleado}`,{
+                    method:"GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                } );
+                
+                // Verificar si la respuesta fue exitosa
+                if (!resp.ok) {
+                    throw new Error(`Error al obtener los cursos: ${resp.statusText}`);
+                }
+                
                 const cursos = await resp.json();
                 setCursos(cursos);
                 console.log(cursos);
             } catch (error) {
-                console.error("Error al obtener los cursos:", error);
+                if (error instanceof Error) {
+                    console.error(error.message);
+                } else {
+                    console.error('Error desconocido', error);
+                }
             } finally {
                 setIsLoading(false); // Cambiar estado después de cargar los datos
             }
         };
-
         obtenerCursos();
-    }, [idEmpleado]);
+    }, [idEmpleado]);     
     return (
         <>
             {

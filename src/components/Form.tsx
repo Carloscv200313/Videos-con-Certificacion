@@ -24,11 +24,11 @@ export const Form = () => {
                     alert(data.message);
                 } else {
                     if (data.rol === "empleado") {
-                        route.push(`https://cursos-expertiss.vercel.app/Empleado/${data.id}`);
+                        route.push(`/Empleado/${data.id}`);
 
                     }
                     if (data.rol === "gerente") {
-                        route.push("https://cursos-expertiss.vercel.app/Gerente");
+                        route.push("/Gerente");
                         console.log(data);
                     }
                 }
