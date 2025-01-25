@@ -35,6 +35,10 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
       try {
         const datos = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
           body: JSON.stringify({ idUsuario, idCurso, siguienteVideo: false })
         });
         const dato = await datos.json()
@@ -56,6 +60,10 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
       try {
         const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
           body: JSON.stringify({ idUsuario, idCurso })
         });
         const video = await resp.json()
@@ -72,6 +80,10 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
     try {
       const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify({ idUsuario, idCurso, siguienteVideo: true })
       });
       const video = await resp.json()

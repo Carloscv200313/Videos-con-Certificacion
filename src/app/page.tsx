@@ -8,6 +8,7 @@ export default function Home() {
           <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12 hidden md:flex">
             <div className="flex flex-col items-center justify-center w-full h-full relative ">
               <Image
+                priority
                 height={500}
                 width={500}
                 src="https://res.cloudinary.com/macxenon/image/upload/v1631570592/Run_-_Health_qcghbu.png"

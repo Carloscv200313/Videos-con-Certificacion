@@ -13,18 +13,18 @@ export const Form = () => {
         e.preventDefault();
         await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
             body: JSON.stringify({ correo: user, contrasena }),
-            credentials: "include",
+            credentials: 'include', // Incluye las cookies en la solicitud
+            headers: {
+              'Content-Type': 'application/json',
+            },
         }).then(response => response.json())
             .then(data => {
                 if (data.message) {
                     alert(data.message);
                 } else {
                     if (data.rol === "empleado") {
-                        route.push(`${process.env.NEXT_PUBLIC_URL}/Empleado/${data.id}`);
+                        route.push(`/Empleado/${data.id}`);
 
                     }
                     if (data.rol === "gerente") {
@@ -48,6 +48,7 @@ export const Form = () => {
                             name="user"
                             placeholder="Usuario"
                             required
+                            autoComplete="current-text"
                             onChange={(e) => { setUser(e.target.value); }}
                             type="text"
                             className="border placeholder-gray-400 focus:outline-none
@@ -62,6 +63,7 @@ export const Form = () => {
                             type={showcontrasena ? "text" : "password"} // Cambiar tipo según el estado
                             placeholder="Contraseña"
                             required
+                            autoComplete="current-password"
                             onChange={(e) => { setcontrasena(e.target.value); }}
                             className="border placeholder-gray-400 focus:outline-none
                         focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white

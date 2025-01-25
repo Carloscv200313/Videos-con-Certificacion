@@ -26,6 +26,7 @@ export const Cart = ({ curso, idEmpleado }: Props) => {
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    credentials: "include",
                     body: JSON.stringify({
                         CursoId: curso.CursoId,
                         PrimerVideoId: curso.PrimerVideoId,

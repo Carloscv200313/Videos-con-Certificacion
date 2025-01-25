@@ -23,7 +23,10 @@ export const Carts = ({ idEmpleado }: Props) => {
     useEffect(() => {
         const obtenerCursos = async () => {
             try {
-                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/${idEmpleado}`);
+                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/${idEmpleado}`, {
+                    method: 'GET',
+                    credentials: 'include', // Asegura que las cookies se incluyan
+                });
                 const cursos = await resp.json();
                 setCursos(cursos);
                 console.log(cursos);
