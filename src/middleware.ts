@@ -1,47 +1,95 @@
-import { NextResponse } from 'next/server'
-import { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
-export async function middleware(request: NextRequest) {
-    const cookie = request.cookies.get('mytoken');
-    if (request.nextUrl.pathname.includes('/Empleado')) {
-        if (cookie==undefined) {
-            return NextResponse.redirect(new URL("/", request.url))
-        }
-        try {
-            const { payload } = await jwtVerify(cookie.value, new TextEncoder().encode('empleado'))
-            console.log(payload)
-            const id = payload.id;
-            console.log(id)
-            if (!id) {
-                // Si no se encuentra el idEmpleado, redirige al inicio
-                return NextResponse.redirect(new URL("/", request.url));
-            }
-            // Obtener el ID de la URL solicitada
-            const pathParts = request.nextUrl.pathname.split('/');
-            const idRuta = parseInt(pathParts[2], 10); // Última parte de la ruta
+// Orígenes permitidos (incluyendo localhost para desarrollo)
+const allowedOrigins = ['https://cursos-expertiss.vercel.app', 'http://localhost:3000'];
 
-            if (idRuta !== id) {
-                // Si el ID en la URL no coincide con el del token, redirige al inicio
-                return NextResponse.redirect(new URL("/", request.url));
-            }
-            return NextResponse.next();
-        } catch (error) {
-            console.log(error)
-            return NextResponse.redirect(new URL("/", request.url))
-        }
-    }    
-    if (request.nextUrl.pathname.includes('/Gerente')) {
-        if (cookie==undefined) {
-            return NextResponse.redirect(new URL("/", request.url))
+const corsOptions = {
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true', // Necesario para manejar cookies
+};
+
+export async function middleware(request: NextRequest) {
+    const origin = request.headers.get('origin') ?? '';
+    const isAllowedOrigin = allowedOrigins.includes(origin);
+
+    // Manejar solicitudes preflight (OPTIONS)
+    const isPreflight = request.method === 'OPTIONS';
+    if (isPreflight) {
+        const preflightHeaders = {
+            ...(isAllowedOrigin && { 'Access-Control-Allow-Origin': origin }),
+            ...corsOptions,
+        };
+        return NextResponse.json({}, { headers: preflightHeaders });
+    }
+
+    // Aquí manejamos las rutas protegidas para empleados y gerentes
+    const cookie = request.cookies.get('mytoken')?.value; // Corregir acceso a la cookie
+
+    if (request.nextUrl.pathname.includes('/Empleado')) {
+        if (!cookie) {
+            return NextResponse.redirect(new URL("/", request.url));
         }
         try {
-            const { payload } = await jwtVerify(cookie.value, new TextEncoder().encode('gerente'))
-            console.log(payload)
-            return NextResponse.next()
+            const secretKey = new TextEncoder().encode('empleado'); // Convertir clave secreta a Uint8Array
+            const { payload } = await jwtVerify(cookie, secretKey); // Corregir clave secreta
+            const id = payload.id;
+            if (!id) {
+                return NextResponse.redirect(new URL("/", request.url));
+            }
+            const pathParts = request.nextUrl.pathname.split('/');
+            const idRuta = parseInt(pathParts[2], 10); // Asegurarse de que idRuta sea un número
+            if (idRuta !== id) {
+                return NextResponse.redirect(new URL("/", request.url));
+            }
+            const response = NextResponse.next();
+            if (isAllowedOrigin) {
+                response.headers.set('Access-Control-Allow-Origin', origin);
+            }
+            Object.entries(corsOptions).forEach(([key, value]) => {
+                response.headers.set(key, value);
+            });
+            return response;
         } catch (error) {
-            console.log(error)
-            return NextResponse.redirect(new URL("/", request.url))
+            console.log(error);
+            return NextResponse.redirect(new URL("/", request.url));
         }
     }
+
+    if (request.nextUrl.pathname.includes('/Gerente')) {
+        if (!cookie) {
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+        try {
+            const secretKey = new TextEncoder().encode('gerente'); // Convertir clave secreta a Uint8Array
+            await jwtVerify(cookie, secretKey); // Corregir clave secreta
+            const response = NextResponse.next();
+            if (isAllowedOrigin) {
+                response.headers.set('Access-Control-Allow-Origin', origin);
+            }
+            Object.entries(corsOptions).forEach(([key, value]) => {
+                response.headers.set(key, value);
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+            return NextResponse.redirect(new URL("/", request.url));
+        }
+    }
+
+    // Asegúrate de aplicar las cabeceras CORS en todas las rutas (no solo las protegidas)
+    const response = NextResponse.next();
+    if (isAllowedOrigin) {
+        response.headers.set('Access-Control-Allow-Origin', origin);
+    }
+    Object.entries(corsOptions).forEach(([key, value]) => {
+        response.headers.set(key, value);
+    });
+    return response;
 }
+
+export const config = {
+    matcher: '/api/:path*', // Aplica middleware a las rutas de la API
+};
