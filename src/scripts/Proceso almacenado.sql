@@ -379,6 +379,11 @@ BEGIN
     -- Si no hay un siguiente video, salir del procedimiento
     IF @idSiguienteVideo IS NULL
     BEGIN
+
+		UPDATE Progresos
+			SET examenHabilitado = 1
+			where alumnoId = @idUsuario and cursoId = @idCurso;
+
         SELECT * 
 		    FROM Videos 
 		    WHERE id = @idVideo;

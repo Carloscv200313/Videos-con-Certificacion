@@ -87,8 +87,8 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
       {
         isLoading ? <Loader /> : null
       }
-      <div className={`${isLoading ? "hidden" : "flex"} w-full mt-0 p-0 bg-[#1d1238] rounded-lg  flex-col justify-center items-center gap-10 pt-5`}>
-        <h1 className='text-5xl text-white font-serif w-full text-start pl-10'>
+      <div className={`${isLoading ? "hidden" : "flex"} w-full mt-0 p-0 bg-[#1d1238] rounded-lg  flex-col justify-center items-center gap-0 pt-5`}>
+        <h1 className='text-5xl text-white font-serif w-full text-start pl-10 pb-5'>
           {videos[0]?.Titulo || "Sin título disponible"}
         </h1>
         {videos.length > 0 ? (
