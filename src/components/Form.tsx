@@ -10,7 +10,7 @@ export const Form = () => {
 
     const credenciales = async (e: React.FormEvent) => {
         e.preventDefault();
-        await fetch("/api/auth", {
+        await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
             body: JSON.stringify({ correo: user, contrasena })
         }).then(response => response.json())
