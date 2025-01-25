@@ -34,31 +34,10 @@ export async function POST(req: NextRequest) {
         // Crear una respuesta con la cookie en las cabeceras
         const response = NextResponse.json({ rol, id });
         response.headers.set("Set-Cookie", serialized);
-
-        // Establecer las cabeceras de CORS
-        response.headers.set("Access-Control-Allow-Origin", "https://cursos-expertiss.vercel.app");
-        response.headers.set("Access-Control-Allow-Methods", "POST");
-        response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
         return response;
     }
 
     // En caso de que el usuario no exista
     const errorResponse = NextResponse.json({ message: "Usuario no existe" });
-
-    // También configuramos las cabeceras de CORS aquí
-    errorResponse.headers.set("Access-Control-Allow-Origin", "https://cursos-expertiss.vercel.app");
-    errorResponse.headers.set("Access-Control-Allow-Methods", "POST");
-    errorResponse.headers.set("Access-Control-Allow-Headers", "Content-Type");
-
     return errorResponse;
-}
-
-// Manejar las solicitudes OPTIONS para las preflight requests
-export function OPTIONS() {
-    const response = NextResponse.json({});
-    response.headers.set("Access-Control-Allow-Origin", "https://cursos-expertiss.vercel.app");
-    response.headers.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    response.headers.set("Access-Control-Allow-Headers", "Content-Type");
-    return response;
 }
