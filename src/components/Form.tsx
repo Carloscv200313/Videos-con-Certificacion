@@ -13,8 +13,11 @@ export const Form = () => {
         e.preventDefault();
         await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
-            mode: "no-cors",
-            body: JSON.stringify({ correo: user, contrasena })
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ correo: user, contrasena }),
+            credentials: "include",
         }).then(response => response.json())
             .then(data => {
                 if (data.message) {
