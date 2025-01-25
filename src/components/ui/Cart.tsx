@@ -21,7 +21,7 @@ export const Cart = ({ curso, idEmpleado }: Props) => {
     const PrimerVideo = async () => {
         if (curso.VideosVistos < 1) {
             try {
-                const resp = await fetch(`/api/${idEmpleado}`, {
+                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/${idEmpleado}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",

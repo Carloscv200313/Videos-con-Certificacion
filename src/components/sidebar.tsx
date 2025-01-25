@@ -59,7 +59,7 @@ export const Sidebar = ({ idUsuario, idCurso, idVideo }: Props) => {
     useEffect(() => {
         const obtenerVideos = async () => {
             try {
-                const resp = await fetch(`/api/videos`, {
+                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos`, {
                     method: "POST",
                     body: JSON.stringify({ idUsuario, idCurso }),
                 });

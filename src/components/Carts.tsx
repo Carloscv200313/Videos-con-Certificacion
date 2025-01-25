@@ -23,7 +23,7 @@ export const Carts = ({ idEmpleado }: Props) => {
     useEffect(() => {
         const obtenerCursos = async () => {
             try {
-                const resp = await fetch(`/api/${idEmpleado}`);
+                const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/${idEmpleado}`);
                 const cursos = await resp.json();
                 setCursos(cursos);
                 console.log(cursos);

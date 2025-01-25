@@ -19,7 +19,7 @@ export const Form = () => {
                     alert(data.message);
                 } else {
                     if (data.rol === "empleado") {
-                        route.push(`/Empleado/${data.id}`);
+                        route.push(`${process.env.NEXT_PUBLIC_URL}/Empleado/${data.id}`);
 
                     }
                     if (data.rol === "gerente") {

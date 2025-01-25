@@ -33,7 +33,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
   useEffect(() => {
     const obtenerVideo = async () => {
       try {
-        const datos = await fetch(`/api/videos/${idVideo}`, {
+        const datos = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
           method: "POST",
           body: JSON.stringify({ idUsuario, idCurso, siguienteVideo: false })
         });
@@ -54,7 +54,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
     setNextButtonVisible(true)
     if (!videos[0].VideoVisto) {
       try {
-        const resp = await fetch(`/api/videos/${idVideo}`, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
           method: "PUT",
           body: JSON.stringify({ idUsuario, idCurso })
         });
@@ -70,7 +70,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
 
   const handleNextVideo = async () => {
     try {
-      const resp = await fetch(`/api/videos/${idVideo}`, {
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
         method: "POST",
         body: JSON.stringify({ idUsuario, idCurso, siguienteVideo: true })
       });

@@ -7,7 +7,7 @@ export const Cursos = () => {
     useEffect(() => {
         const obtenerCursor = async () => {
             try {
-                const res = await fetch('/api/cursos')
+                const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/cursos`)
                 const data = await res.json()
                 setCursos(data)
                 console.log(data)

@@ -34,7 +34,7 @@ export const TablaCursos = ({ CursoId }: Prop) => {
     useEffect(() => {
         const obtenerDatos = async () => {
             try {
-                const res = await fetch("/api/cursos", {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/cursos`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
