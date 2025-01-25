@@ -9,6 +9,7 @@ export const Form = () => {
     const [showcontrasena, setShowcontrasena] = useState(false); // Estado para mostrar/ocultar contraseña
 
     const credenciales = async (e: React.FormEvent) => {
+        console.log("URL:", process.env.NEXT_PUBLIC_URL);
         e.preventDefault();
         await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
