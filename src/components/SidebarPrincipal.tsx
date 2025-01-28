@@ -74,9 +74,12 @@ export const SidebarPrincipal = () => {
                 />
                 <SidebarMenu vistas={vistas} />
                 <footer className="flex flex-col items-center justify-center w-full">
-                    <Link href={"/"} onClick={Salir} className="px-3 pb-10 text-gray-400 text-xl font-mono w-full  flex gap-2 hover:text-white">
-                        <ArrowLeftFromLine className=" w-7 h-7 flex-shrink-0" />
+                    <Link href={"/"} onClick={Salir} 
+                    className="p-3 pb-10 text-gray-400 text-xl font-sidebarPrincipal w-full  flex gap-2 hover:text-white ">
+                        <div className="hover:bg-red-500 flex flex-row w-full gap-2 items-center p-3 rounded-xl">
+                        <ArrowLeftFromLine className=" w-5 h-5 flex-shrink-0" />
                         Salir
+                        </div>
                     </Link>
                 </footer>
             </nav>

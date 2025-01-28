@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Progress } from '@/components/ui/progress';
+import Image from 'next/image';
 
 interface Props {
     curso: {
@@ -46,6 +47,11 @@ export const Cart = ({ curso, idEmpleado }: Props) => {
             onClick={PrimerVideo}
         >
             <div className="text-start h-full w-full overflow-hidden flex flex-col justify-between bg-transparent  mb-5">
+                <Image 
+                    src="/capacitacion.jpg" 
+                    alt="Course Image" 
+                    width={500} height={300} 
+                />
                 <h3 className="text-2xl font-bold text-white font-mono ">{curso.NombreCurso}</h3>
                 <div className="mt-4">
                     <p className="text-sm text-neutral-300 text-end">{Progreso.toFixed(2)}%</p>

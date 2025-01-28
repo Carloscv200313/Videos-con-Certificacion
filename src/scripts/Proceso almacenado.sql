@@ -60,7 +60,6 @@ BEGIN
         u.nombre AS Usuario,
         c.id AS CursoId,
         c.nombre AS NombreCurso,
-        c.descripcion AS DescripcionCurso,
         c.cantidadVideos AS CantidadVideos,
         (SELECT TOP 1 v.id
          FROM Videos v
@@ -462,7 +461,7 @@ BEGIN
         U.id AS UsuarioId,
         U.nombre AS NombreUsuario,
         P.progreso AS VideosVistos,
-        P.examenHabilitado AS ExamenHabilitado,
+        P.Intentos AS Intentos,
         P.notaFinal AS NotaFinalCurso,
 		C.cantidadVideos AS CantidadCursos,
 		C.nombre AS NombreCurso
@@ -480,7 +479,7 @@ END;
 
 
 
-
+select * from Progresos
 
 
 
@@ -498,7 +497,6 @@ BEGIN
         u.nombre AS Usuario,
         c.id AS CursoId,
         c.nombre AS NombreCurso,
-        c.descripcion AS DescripcionCurso,
         c.cantidadVideos AS CantidadVideos,
         (SELECT TOP 1 v.id
          FROM Videos v
@@ -526,7 +524,9 @@ END;
 
 
 
-
+        UPDATE Progresos
+        SET notaFinal = 0
+        WHERE alumnoId = 1 AND cursoId =1
 
 
 
@@ -645,6 +645,40 @@ BEGIN
 END;
 
 
+
+
+
+
+
+CREATE OR ALTER PROCEDURE IngresarNotas
+    @IdAlumno INT,
+    @IdCurso INT,
+	@nota INT
+AS
+BEGIN
+    -- Actualizar los datos: deshabilitar examen y agregar un intento
+    UPDATE Progresos
+    SET 
+        examenHabilitado = 1, -- Cambiar a false (en SQL es 0)
+        notaFinal = @nota -- Incrementar los intentos en 1
+    WHERE 
+        alumnoId = @IdAlumno AND
+        cursoId = @IdCurso;
+
+    -- Devolver los datos actualizados para el alumno y curso específicos
+    SELECT 
+        alumnoId AS IdAlumno,
+        cursoId AS IdCurso,
+        progreso AS ProgresoCurso,
+        examenHabilitado AS ExamenHabilitado,
+        notaFinal AS NotaFinal,
+        Intentos AS CantidadIntentos,
+        linkExamen AS EnlaceExamen
+    FROM Progresos
+    WHERE 
+        alumnoId = @IdAlumno AND
+        cursoId = @IdCurso;
+END;
 
 
 

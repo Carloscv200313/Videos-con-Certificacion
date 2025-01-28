@@ -118,14 +118,14 @@ export default function TablaCursos({ IdAlumno }: Props) {
                 </TableHeader>
                 <TableBody>
                     {cursos.map((curso, key) => (
-                        <TableRow key={key} className={curso.ExamenHabilitado?"bg-green-800":"bg-red-800"}>
+                        <TableRow key={key} className={curso.ExamenHabilitado ? "bg-green-800" : "bg-red-800"}>
                             <TableCell>{curso.NombreCurso}</TableCell>
                             <TableCell>{curso.CantidadIntentos}</TableCell>
                             <TableCell>{curso.NotaFinal}</TableCell>
                             <TableCell>
                                 <Button
                                     onClick={() => manejarAbrirModal(curso)}
-                                    disabled={!curso.ExamenHabilitado}
+                                    disabled={curso.NotaFinal >= 11 || !curso.ExamenHabilitado || curso.CantidadIntentos>=3}
                                 >
                                     Ir al examen
                                 </Button>

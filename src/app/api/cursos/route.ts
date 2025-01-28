@@ -21,3 +21,34 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
     }
 }
+
+
+
+export async function PUT(request: NextRequest) {
+    try {
+        // Parsear los datos del cuerpo de la solicitud
+        const { IdAlumno, IdCurso, nota } = await request.json();
+
+        // Validar que se recibieron todos los parámetros necesarios
+        if (!IdAlumno || !IdCurso || nota === undefined) {
+            return NextResponse.json({ error: 'Parámetros incompletos' }, { status: 400 });
+        }
+
+        // Establecer conexión a la base de datos
+        const conx = await Conex();
+
+        // Llamar al procedimiento almacenado
+        const result = await conx.request()
+            .input("IdAlumno", sql.Int(), IdAlumno)
+            .input("IdCurso", sql.Int(), IdCurso)
+            .input("nota", sql.Int(), nota)
+            .execute("IngresarNotas");
+
+        // Devolver los datos obtenidos del procedimiento almacenado
+        return NextResponse.json(result.recordset);
+    } catch (err) {
+        console.error('Error en la API:', err);
+        return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });
+    }
+}
+
