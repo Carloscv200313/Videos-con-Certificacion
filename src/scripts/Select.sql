@@ -32,10 +32,23 @@ FROM
 
 
 ALTER TABLE Progresos
-ADD Intentos INT ;
+ADD Intentos INT 
+
+
+ALTER TABLE Progresos
+ADD linkExamen VARCHAR(200) ;
+
+
+UPDATE Progresos
+SET linkExamen = 'https://docs.google.com/forms/d/e/1FAIpQLScfgF748UUHK3ioYzRujrAk5vo2UiptPqnFtORt5PxcJGCnWw/viewform?usp=sharing'
+WHERE cursoId = 3;
+
+
 
 ALTER TABLE Progresos
 DROP COLUMN examen3;
+
+
 UPDATE Progresos
 SET Intentos = 0;
 
@@ -78,3 +91,51 @@ VALUES
     ('https://docs.google.com/forms/d/e/1FAIpQLSeC6RsWbdxtzyK4qwOw4XMJWl-H7A_8Mi8nJc6_Zgx2MJrrlQ/viewform?usp=sharing', 1),
     ('https://forms.gle/hYRabpsdoubQeLSj7', 1),
     ('https://forms.gle/DcGFSiWz5znFg8ie6', 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	-- Eliminar referencias en la tabla ProgresoVideo
+DELETE FROM ProgresoVideo
+WHERE videoId IN (
+    SELECT id 
+    FROM Videos
+    WHERE cursoId IN (2, 3)
+);
+
+-- Eliminar referencias en la tabla Progresos
+DELETE FROM Progresos
+WHERE cursoId IN (2, 3);
+
+-- Eliminar referencias en la tabla Examen
+DELETE FROM Examen
+WHERE idCurso IN (2, 3);
+
+-- Eliminar los videos asociados a los cursos
+DELETE FROM Videos
+WHERE cursoId IN (2, 3);
+
+-- Finalmente, eliminar los cursos
+DELETE FROM Cursos
+WHERE id IN (2, 3);

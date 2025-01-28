@@ -72,6 +72,19 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
         console.error("Error al obtener el video:", error)
       }
     }
+    if (videos[0].Orden === 11) {
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/Certificados`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ idUsuario, idCurso, intentos:false })
+      });
+      const video = await resp.json()
+      console.log(video)
+      window.location.reload();
+    }
   }
 
 
@@ -94,19 +107,19 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
     }
     setNextButtonVisible(false)
   }
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
-      {
-        isLoading ? <Loader /> : null
-      }
-      <div className={`${isLoading ? "hidden" : "flex"} w-full mt-0 p-0 bg-[#1d1238] rounded-lg  flex-col justify-center items-center gap-0 pt-5`}>
-        <h1 className='text-5xl text-white font-serif w-full text-start pl-10 pb-5'>
+      <div className={`${isLoading ? "hidden" : "flex"} w-full mt-0 p-0 bg-[#1c1c1c] rounded-lg  flex-col justify-center items-center gap-0 pt-0`}>
+        <h1 className='text-xl text-white font-serif w-full text-start pl-10 pb-5 border-b-2'>
           {videos[0]?.Titulo || "Sin título disponible"}
         </h1>
         {videos.length > 0 ? (
           <video
             ref={videoRef}
-            className="w-1/4 mb-2 rounded"
+            className="w-4/5  mt-10 mb-2 rounded"
             onEnded={VideoTerminado}
             controls
             disablePictureInPicture
@@ -121,8 +134,8 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
         {isNextButtonVisible && videos[0].idVideoSiguiente && (
           <Link
             onClick={handleNextVideo}
-            className="mt-0 px-4 py-2 bg-[#0f0a1e] text-white rounded hover:bg-[#0f0a1e]"
-            href={`/Empleado/${idUsuario}/${idCurso}/${videos[0].idVideoSiguiente}`}>
+            className="mt-0 px-4 py-2 bg-[#310a70] text-white rounded-xl hover:bg-[#310a70]"
+            href={`/Empleado/${idUsuario}/Cursos/${idCurso}/${videos[0].idVideoSiguiente}`}>
             Siguiente video
           </Link>
         )}

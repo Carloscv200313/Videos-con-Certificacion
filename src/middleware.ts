@@ -5,7 +5,7 @@ import { jwtVerify } from 'jose';
 export async function middleware(request: NextRequest) {
     const cookie = request.cookies.get('mytoken');
     if (request.nextUrl.pathname.includes('/Empleado')) {
-        if (cookie==undefined) {
+        if (cookie===undefined) {
             return NextResponse.redirect(new URL("/", request.url))
         }
         try {

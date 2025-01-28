@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/koulen": "^5.1.1",
+    "@fontsource/yeseva-one": "^5.1.1",
+    "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-progress": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "@tabler/icons-react": "^3.27.1",
@@ -16,6 +19,7 @@
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",
     "jose": "^5.9.6",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.469.0",
     "motion": "^11.16.0",
@@ -29,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/mssql": "^9.1.6",
     "@types/node": "^20",

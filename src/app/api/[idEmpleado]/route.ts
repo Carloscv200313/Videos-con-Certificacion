@@ -23,3 +23,17 @@ export async function PUT(request: NextRequest,{ params }: { params: Promise<{ i
         .execute("ActivarCurso")
     return NextResponse.json(result);
 }
+
+
+export async function POST(request: NextRequest,{ params }: { params: Promise<{ idEmpleado: string }> }
+) {
+    const idEmpleado= (await params).idEmpleado;
+    const {idCurso} = await request.json();
+    const conx = await Conex();
+    const result = await conx.request()
+        .input("idUsuario", sql.Int(),idEmpleado)
+        .input("idCurso", sql.Int(),idCurso)
+        .execute("CursoProgreso")
+    const curso = result.recordset[0]
+    return NextResponse.json(curso);
+}

@@ -13,6 +13,7 @@ export const Form = () => {
         e.preventDefault();
         await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
+            mode: 'cors',
             body: JSON.stringify({ correo: user, contrasena }),
             credentials: 'include', // Incluye las cookies en la solicitud
             headers: {
@@ -24,8 +25,8 @@ export const Form = () => {
                     alert(data.message);
                 } else {
                     if (data.rol === "empleado") {
-                        route.push(`/Empleado/${data.id}`);
-
+                        route.push(`/Empleado/${data.id}/Home`);
+                        localStorage.setItem("id", data.id);
                     }
                     if (data.rol === "gerente") {
                         route.push("/Gerente");

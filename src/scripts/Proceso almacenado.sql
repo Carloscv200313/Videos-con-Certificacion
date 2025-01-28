@@ -477,3 +477,176 @@ BEGIN
     ORDER BY 
         U.id;
 END;
+
+
+
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE CursoProgreso(
+    @idUsuario INT,
+	@idCurso INT
+)
+AS
+BEGIN
+    SELECT
+        p.progreso AS VideosVistos,
+        u.nombre AS Usuario,
+        c.id AS CursoId,
+        c.nombre AS NombreCurso,
+        c.descripcion AS DescripcionCurso,
+        c.cantidadVideos AS CantidadVideos,
+        (SELECT TOP 1 v.id
+         FROM Videos v
+         WHERE v.cursoId = c.id
+         ORDER BY v.orden ASC) AS PrimerVideoId
+    FROM 
+        Progresos p  
+    INNER JOIN 
+        Cursos c ON p.cursoId = c.id
+    INNER JOIN 
+        Usuarios u ON p.alumnoId = u.id
+    WHERE 
+        alumnoId = @idUsuario AND c.id=@idCurso ;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE CambiarEstado(
+    @idUsuario INT,
+    @idCurso INT
+)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        -- Actualizar el progreso del curso en la tabla Progresos
+        UPDATE Progresos
+        SET examenHabilitado = 1
+        WHERE alumnoId = @idUsuario AND cursoId = @idCurso;
+        
+        -- Verificar si las filas fueron afectadas
+        IF @@ROWCOUNT = 0
+        BEGIN
+            THROW 50001, 'No se pudo actualizar el estado del video o progreso del curso.', 1;
+        END
+
+        -- Confirmar la transacción
+        COMMIT TRANSACTION;
+
+        -- Retornar mensaje de éxito
+        SELECT '¡El estado del examen ha sido habilitado exitosamente!' AS Mensaje;
+    END TRY
+    BEGIN CATCH
+        -- En caso de error, revertir la transacción
+        ROLLBACK TRANSACTION;
+
+        -- Re-lanzar el error para depuración
+        THROW;
+    END CATCH
+END;
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE ObtenerDatosProcesos
+    @IdAlumno INT
+AS
+BEGIN
+    SELECT 
+        p.alumnoId AS IdAlumno,
+        p.cursoId AS IdCurso,
+        c.nombre AS NombreCurso, -- Se agrega el nombre del curso desde la tabla Cursos
+        p.progreso AS ProgresoCurso,
+        p.examenHabilitado AS ExamenHabilitado,
+        p.notaFinal AS NotaFinal,
+        p.Intentos AS CantidadIntentos,
+        p.linkExamen AS EnlaceExamen
+    FROM  
+        Progresos p
+    INNER JOIN 
+        Cursos c ON p.cursoId = c.id -- Relaciona Progresos con Cursos
+    WHERE 
+        p.alumnoId = @IdAlumno;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR ALTER PROCEDURE ObtenerYActualizarProcesos
+    @IdAlumno INT,
+    @IdCurso INT
+AS
+BEGIN
+    -- Actualizar los datos: deshabilitar examen y agregar un intento
+    UPDATE Progresos
+    SET 
+        examenHabilitado = 0, -- Cambiar a false (en SQL es 0)
+        Intentos = Intentos + 1 -- Incrementar los intentos en 1
+    WHERE 
+        alumnoId = @IdAlumno AND
+        cursoId = @IdCurso;
+
+    -- Devolver los datos actualizados para el alumno y curso específicos
+    SELECT 
+        alumnoId AS IdAlumno,
+        cursoId AS IdCurso,
+        progreso AS ProgresoCurso,
+        examenHabilitado AS ExamenHabilitado,
+        notaFinal AS NotaFinal,
+        Intentos AS CantidadIntentos,
+        linkExamen AS EnlaceExamen
+    FROM Progresos
+    WHERE 
+        alumnoId = @IdAlumno AND
+        cursoId = @IdCurso;
+END;
+
+
+
+
+
+
+

@@ -4,7 +4,7 @@ import sql from "mssql";
 export async function GET() {
     const conx = await Conex();
     const result = await conx.request()
-    .query("SELECT id AS CursoId, nombre AS NombreCurso, descripcion AS DescripcionCurso FROM Cursos")
+    .query("SELECT id AS CursoId, nombre AS NombreCurso FROM Cursos")
     return NextResponse.json(result.recordset);
 }
 export async function POST(request: NextRequest) {
