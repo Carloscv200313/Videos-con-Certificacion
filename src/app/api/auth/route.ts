@@ -14,10 +14,10 @@ export async function POST(req: NextRequest) {
         .execute("Validar_usuario")
 
     if (!result.recordset[0].mensaje) {
-        const { id, rol, } = result.recordset[0]
+        const {id, rol,}= result.recordset[0]
         const token = jwt.sign(
             {
-                exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 1 minuto de expiración
+                exp: Math.floor(Date.now() / 1000) + 60*60*24, // 1 minuto de expiración
                 id,
                 rol
             },
@@ -26,23 +26,16 @@ export async function POST(req: NextRequest) {
 
         // Serializar la cookie
         const serialized = serialize("mytoken", token, {
-            httpOnly: true,
-            maxAge: 60 * 60 * 24,
-            path: "/",
-            sameSite: "none",  // ✅ Permite cookies entre dominios
-            secure: true       // ✅ Requiere HTTPS (obligatorio para SameSite=None)
+            httpOnly: true, // Para mayor seguridad, solo accesible por el servidor
+            maxAge: 60*60*24,     // Duración de 1 minuto
+            path: "/"       // Accesible en toda la aplicación
         });
 
         // Crear una respuesta con la cookie en las cabeceras
-        const response = NextResponse.json({ rol, id });
+        const response = NextResponse.json({rol, id});
         response.headers.set("Set-Cookie", serialized);
-        response.headers.set("Access-Control-Allow-Origin", "https://cursos-expertiss.vercel.app");
-        response.headers.set("Access-Control-Allow-Credentials", "true"); // ✅ Permite enviar cookies en fetch
-        response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
+        
         return response;
-
     }
 
     return NextResponse.json({ message: "Usuario no existe" });

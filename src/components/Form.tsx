@@ -13,7 +13,6 @@ export const Form = () => {
         e.preventDefault();
         await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth`, {
             method: "POST",
-            mode: 'cors',
             body: JSON.stringify({ correo: user, contrasena }),
             credentials: 'include', // Incluye las cookies en la solicitud
             headers: {
