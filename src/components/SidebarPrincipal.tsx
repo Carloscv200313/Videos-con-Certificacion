@@ -53,7 +53,7 @@ export const SidebarPrincipal = () => {
     const Salir = async () => {
         localStorage.clear();
         try {
-            const response = await fetch("/api/delete-cookie", { method: "POST" });
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/delete-cookie`, { method: "POST" });
             const data = await response.json();
             console.log(data.message); // "Cookie eliminada"
         } catch (error) {
