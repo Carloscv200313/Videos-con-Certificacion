@@ -24,7 +24,6 @@ export async function PUT(request: NextRequest,{ params }: { params: Promise<{ i
     return NextResponse.json(result);
 }
 
-
 export async function POST(request: NextRequest,{ params }: { params: Promise<{ idEmpleado: string }> }
 ) {
     const idEmpleado= (await params).idEmpleado;
