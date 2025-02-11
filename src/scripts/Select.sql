@@ -49,6 +49,7 @@ UPDATE Progresos
 SET linkExamen = 'https://docs.google.com/forms/d/e/1FAIpQLScfgF748UUHK3ioYzRujrAk5vo2UiptPqnFtORt5PxcJGCnWw/viewform?usp=sharing'
 WHERE cursoId = 3;
 
+Delete Progresos where alumnoId=3
 
 
 ALTER TABLE Progresos

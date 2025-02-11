@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import React, { useState, useRef, useEffect } from 'react'
 import Loader from './ui/Carga';
+
 interface Props {
   idVideo: string
   idUsuario: string
@@ -18,18 +19,13 @@ interface Video {
   idVideoSiguiente: number
 }
 
-interface SiguienteVideo {
-  id: number
-  titulo: string
-}
-
 export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso }: Props) {
-  const [videos, setVideo] = useState<Video[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [siguienteVideo, setSiguienteVideo] = useState<SiguienteVideo[]>([{ id: 0, titulo: "" }])
+  const [videos, setVideo] = useState<Video[]>([]) 
   const [isNextButtonVisible, setNextButtonVisible] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isLoading, setIsLoading] = useState(true);
+  const [lastWatchedTime, setLastWatchedTime] = useState(0); // Almacena el tiempo visto
+
   useEffect(() => {
     const obtenerVideo = async () => {
       try {
@@ -47,18 +43,17 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
       } catch (error) {
         console.error("Error al obtener el video:", error)
       } finally {
-        setIsLoading(false); // Cambiar estado después de cargar los datos
+        setIsLoading(false);
       }
     }
     obtenerVideo()
   }, [idCurso, idVideo, idUsuario])
 
-
   const VideoTerminado = async () => {
     setNextButtonVisible(true)
     if (!videos[0].VideoVisto) {
       try {
-        const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
+        await fetch(`${process.env.NEXT_PUBLIC_URL}/api/videos/${idVideo}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -66,28 +61,11 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
           credentials: "include",
           body: JSON.stringify({ idUsuario, idCurso })
         });
-        const video = await resp.json()
-        console.log(video)
       } catch (error) {
         console.error("Error al obtener el video:", error)
       }
     }
-    if (videos[0].Orden === 11) {
-      const resp = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/Certificados`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ idUsuario, idCurso, intentos:false })
-      });
-      const video = await resp.json()
-      console.log(video)
-      window.location.reload();
-    }
   }
-
-
 
   const handleNextVideo = async () => {
     try {
@@ -100,16 +78,29 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
         body: JSON.stringify({ idUsuario, idCurso, siguienteVideo: true })
       });
       const video = await resp.json()
-      setSiguienteVideo(video)
-      console.log(video)
+      console.log(video);
     } catch (error) {
       console.error("Error al obtener el video:", error)
     }
     setNextButtonVisible(false)
   }
+
+  // Función para evitar adelantar el video manualmente
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const currentTime = videoRef.current.currentTime;
+      if (currentTime > lastWatchedTime + 1 || videos[0].VideoVisto) { // Si adelanta, lo regresamos
+        videoRef.current.currentTime = lastWatchedTime;
+      } else {
+        setLastWatchedTime(currentTime); // Guardamos el tiempo visto
+      }
+    }
+  };
+
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <>
       <div className={`${isLoading ? "hidden" : "flex"} w-full mt-0 p-0 bg-[#1c1c1c] rounded-lg  flex-col justify-center items-center gap-0 pt-0`}>
@@ -121,6 +112,7 @@ export default function DefaultVideoProgressPlayer({ idVideo, idUsuario, idCurso
             ref={videoRef}
             className="w-4/5  mt-10 mb-2 rounded"
             onEnded={VideoTerminado}
+            onTimeUpdate={handleTimeUpdate} // Detecta cambios en el tiempo
             controls
             disablePictureInPicture
             aria-label="Video predeterminado"

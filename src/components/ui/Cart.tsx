@@ -48,9 +48,10 @@ export const Cart = ({ curso, idEmpleado }: Props) => {
         >
             <div className="text-start h-full w-full overflow-hidden flex flex-col justify-between bg-transparent  mb-5">
                 <Image 
-                    src="/capacitacion.jpg" 
+                    src={`/capacitacion${curso.CursoId}.jpg`}
                     alt="Course Image" 
-                    width={500} height={300} 
+                    width={500} height={300}
+                    className='object-fill h-56' 
                 />
                 <h3 className="text-2xl font-bold text-white font-mono ">{curso.NombreCurso}</h3>
                 <div className="mt-4">
